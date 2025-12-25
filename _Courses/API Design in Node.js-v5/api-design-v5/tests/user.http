@@ -1,0 +1,25 @@
+### 
+GET http://localhost:3000/health
+
+
+### 
+
+POST http://localhost:3000/api/users/auth/register
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "username": "johndoe",
+  "password": "123456",
+  "firstName": "John",
+  "lastName": "Doe"
+}
+###
+GET http://localhost:3001/item/all
+
+
+###
+GET http://localhost:3001/item/6887c1a9700416cb6270e0ed
+
+###
+GET http://localhost:3001/item/nonexistent

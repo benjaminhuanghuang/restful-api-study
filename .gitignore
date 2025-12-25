@@ -1,0 +1,8 @@
+.DS_Store
+node_modules
+*-lock.json
+.env
+dist
+coverage
+drizzle
+.next

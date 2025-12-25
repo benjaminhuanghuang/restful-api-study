@@ -103,3 +103,38 @@ GET /entries?habitId=...&cursor=nextCursor&limit=10
 ```
 
 This creates a loop for safe and consistent pagination.
+
+## Response for prev, next button
+
+```json
+{
+  "data": [
+    {
+      "id": "ent_01948f03-2399-773a-bd80-b1a5ae89f483",
+      "name": "item1"
+    },
+    {
+      "id": "ent_01948f03-2399-773a-bd80-b1a5ae89f483",
+      "name": "item2"
+    },
+    ...
+  ],
+  "links": [
+    {
+      "href": "https://api/entries?
+              habitId=01948a02-7118-7902-b1f4-afb25e883c2b&
+              limit=8",
+      "rel": "first",
+      "method": "GET"
+    },
+    {
+      "href": "https://api/entries?
+              habitId=01948a02-7118-7902-b1f4-afb25e883c2b&
+              cursor=ZW50XzAxOTQ4ZjAwLTY5N2QtNzhjMi04ZDZjLTc0ZGI2ZTRjNzU00Q&
+              limit=8",
+      "rel": "next",
+      "method": "GET"
+    }
+  ]
+}
+```

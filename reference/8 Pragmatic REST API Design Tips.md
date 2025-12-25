@@ -60,3 +60,53 @@ LIMIT 10;
 ```
 
 对数据变动敏感性低, 性能更好-尤其是大数据表, 可以无限滚动（infinite scroll）
+
+Response for prev, next button
+
+```json
+{
+  "data": [
+    {
+      "id": "ent_01948f03-2399-773a-bd80-b1a5ae89f483",
+      "name": "item1"
+    },
+    {
+      "id": "ent_01948f03-2399-773a-bd80-b1a5ae89f483",
+      "name": "item2"
+    },
+    ...
+  ],
+  "links": [
+    {
+      "href": "https://api/entries?
+              habitId=01948a02-7118-7902-b1f4-afb25e883c2b&
+              limit=8",
+      "rel": "first",
+      "method": "GET"
+    },
+    {
+      "href": "https://api/entries?
+              habitId=01948a02-7118-7902-b1f4-afb25e883c2b&
+              cursor=ZW50XzAxOTQ4ZjAwLTY5N2QtNzhjMi04ZDZjLTc0ZGI2ZTRjNzU00Q&
+              limit=8",
+      "rel": "next",
+      "method": "GET"
+    }
+  ]
+}
+```
+
+## Use a structured error format
+
+```json
+Content-Type: application/problem+json
+
+{
+  "type": "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+  "title": "Not Found",
+  "status": 404,
+  "instance": "http://api/habits/h_aadcad3f-8dc8-443d-be44-3d99893ba18a",
+  "traceId": "00-63d4af1807586b0d98901ae47944192d-9a8635facb90bf76-01",
+  "requestId": "0HN7C8PRNMGIA:00000001"
+}
+```

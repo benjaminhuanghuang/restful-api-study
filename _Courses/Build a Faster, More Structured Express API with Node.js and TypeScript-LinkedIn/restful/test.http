@@ -1,0 +1,14 @@
+
+GET http://localhost:3001/
+
+###
+GET http://localhost:3001/item/all
+
+
+###
+GET http://localhost:3001/item/6887c1a9700416cb6270e0ed
+
+###
+GET http://localhost:3001/item/nonexistent
+
+

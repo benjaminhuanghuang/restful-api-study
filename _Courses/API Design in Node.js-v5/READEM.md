@@ -7,7 +7,7 @@ https://github.com/Hendrixer/api-design-node-v5
 
 https://www.bilibili.com/video/BV11WHDzsE4L
 
-- Node.js v23.6
+- Node.js v23.6 or 24.3
 - postgreSQL
 - vitest
 

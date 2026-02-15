@@ -1,0 +1,34 @@
+###
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "name": "testuser",
+  "password": "testpassword",
+  "email": "3333@mail.com"
+}
+
+
+###
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "3333@mail.com",
+  "password": "testpassword"
+}
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE0YzZjYWExLTY2NzQtNDc5Zi1hODU3LWQ0OTAyMWUwNjdkNCIsImlhdCI6MTc2NzU4NTk2MSwiZXhwIjoxNzY4MTkwNzYxfQ.HkC4Drkls6CtDZSpHm1aa8ffS8zHRSxZ0nhOIqRjgu8
+
+###
+POST http://localhost:3000/watchlist
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "movieId": "20e5664c-40fe-4d3e-bdff-7501548462d1",
+  "userId": "a4c6caa1-6674-479f-a857-d49021e067d4",
+  "status": "WATCHING",
+  "rating": 5,
+  "notes": "Great movie!"
+}

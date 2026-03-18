@@ -2,6 +2,8 @@
 
 Node.js, TypeScript, MongoDB, Docker, Nginx & SSL: Build and Deploy a Production-Ready REST API
 
+by Altan Yilmaz
+
 https://www.udemy.com/course/build-deploy-a-real-world-api-with-typescript-docker
 
 ## Table of content

@@ -95,3 +95,10 @@ const ShipmentSchema = new Mongoose.Schema(
   },
   { timestamps: true, versionKey: false },
 );
+
+ShipmentSchema.index(
+  { user_id: 1, is_sub_shipment: 1, createdAt: -1 },
+  { partialFilterExpression: { is_sub_shipment: false } },
+);
+
+export default Mongoose.model("shipment", ShipmentSchema);

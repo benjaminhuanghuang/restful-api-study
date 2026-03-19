@@ -1,6 +1,6 @@
 import { Document, Types } from "mongoose";
 
-export interface ICustomer extends Document {
+export default interface ICustomer extends Document {
   user_id: Types.ObjectId;
   name: string;
   contact_person?: string;

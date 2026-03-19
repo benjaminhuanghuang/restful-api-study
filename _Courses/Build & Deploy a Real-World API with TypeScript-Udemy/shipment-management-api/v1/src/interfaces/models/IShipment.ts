@@ -1,6 +1,6 @@
 import { Document, Types } from "mongoose";
 
-export interface IShipment extends Document {
+export default interface IShipment extends Document {
   user_id: Types.ObjectId;
   pickup_time?: Date;
   loading_time?: string;

@@ -13,7 +13,7 @@ export interface IBillingInformation {
   country: string;
   postcode: string;
 }
-export interface IUser extends Document {
+export default interface IUser extends Document {
   email: string;
   password: string;
   company_name?: string;

@@ -1,6 +1,6 @@
 import { Document, Types } from "mongoose";
 
-export interface IDock extends Document {
+export default interface IDock extends Document {
   user_id: Types.ObjectId;
   name: string;
   purpose?: string;

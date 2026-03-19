@@ -34,3 +34,9 @@ https://www.bilibili.com/video/BV1oDwYz5ExJ/
 - Shipment Controller - Route etc.
 - API Security
 - Production Deployment: Docker, Nginx, SSL Certificates, and Domain Configuration
+
+## Create secret
+
+```sh
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+```

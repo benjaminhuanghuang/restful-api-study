@@ -88,3 +88,5 @@ class APIResponseMessages {
     });
   }
 }
+
+export default APIResponseMessages;

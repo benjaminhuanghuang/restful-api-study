@@ -19,8 +19,10 @@ class BaseService {
     return this.baseModel.findOne(where);
   }
 
-  update(id: string, data: object) {
-    return this.baseModel.findByIdAndUpdate(id, data, { new: true });
+  update(user_id: string, id: string, data: object) {
+    return this.baseModel.findByIdAndUpdate({ _id: id, user_id }, data, {
+      new: true,
+    });
   }
 
   updateWhere(user_id: string, id: string, data: object) {

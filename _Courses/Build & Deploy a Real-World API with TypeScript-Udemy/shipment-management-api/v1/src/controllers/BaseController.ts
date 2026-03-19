@@ -48,11 +48,88 @@ class BaseController {
     };
   }
 
-  create = async (req: Request, res: Response) => {};
+  create = (req: Request, res: Response) => {
+    let where: { [key: string]: string } = {};
 
-  updated() {}
+    try {
+      if (this.creationLimitBy)
+        where[this.creationLimitBy] = req.body[this.creationLimitBy];
 
-  delete() {}
+      this.service.findOne(where).then((response: object) => {
+        if (!response) {
+          // if no existing record found
+          this.service
+            .create(req.body)
+            .then((response: object) => {
+              this.APIResponseMessages.created(res, response);
+            })
+            .catch((error: Error) => {
+              this.APIResponseMessages.errorOccurred(res, error);
+            });
+        } else {
+          this.APIResponseMessages.alreadyExists(
+            res,
+            req.body[this.creationLimitBy],
+          );
+        }
+      });
+    } catch (error) {
+      this.APIResponseMessages.errorOccurred(res, error as Error);
+    }
+  };
 
-  list() {}
+  update = (req: Request, res: Response) => {
+    this.service
+      .update((req as any).user?._id, req.body._id, req.body)
+      .then((updated) => {
+        if (updated) {
+          this.APIResponseMessages.updated(res, updated);
+        } else {
+          this.APIResponseMessages.noRecordsFound(res);
+        }
+      })
+      .catch((e: Error) => this.APIResponseMessages.errorOccurred(res, e));
+  };
+
+  delete = (req: Request, res: Response) => {
+    if (this.softDelete === false) {
+      this.service
+        .delete((req as any).user?._id, req.params.id as string)
+        .then((deleted) => {
+          if (deleted) {
+            this.APIResponseMessages.deleted(res, deleted);
+          } else {
+            this.APIResponseMessages.noRecordsFound(res);
+          }
+        })
+        .catch((e: Error) => this.APIResponseMessages.errorOccurred(res, e));
+    } else {
+      req.body.deleted = true;
+      this.service
+        .update((req as any).user?._id, req.params.id as string, req.body)
+        .then((deleted) => {
+          if (deleted) {
+            this.APIResponseMessages.deleted(res, deleted);
+          } else {
+            this.APIResponseMessages.noRecordsFound(res);
+          }
+        })
+        .catch((e: Error) => this.APIResponseMessages.errorOccurred(res, e));
+    }
+  };
+
+  list = (req: Request, res: Response) => {
+    const filter: any = { user_id: (req as any).user._id };
+
+    if (this.softDelete) {
+      filter.deleted = false;
+    }
+
+    this.service
+      .list(filter)
+      .then((list) => {
+        this.APIResponseMessages.listed(res, list);
+      })
+      .catch((e: Error) => this.APIResponseMessages.errorOccurred(res, e));
+  };
 }

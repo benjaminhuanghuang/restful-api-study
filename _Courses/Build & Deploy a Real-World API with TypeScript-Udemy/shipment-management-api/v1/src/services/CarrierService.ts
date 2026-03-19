@@ -10,6 +10,8 @@ class CarrierService extends BaseService {
   constructor() {
     super(BaseModel);
   }
+
+  blockAndUnblockCarrier() {}
 }
 
 export default new CarrierService();

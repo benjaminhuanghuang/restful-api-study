@@ -25,14 +25,14 @@ type ServiceType =
 class BaseController {
   service: ServiceType;
   APIResponseMessages: APIResponseMessages;
-  creationLimitBy: string;
+  creationLimitBy: string | undefined;
   softDelete: boolean;
   services: { [key: string]: ServiceType };
 
   constructor(
     service: ServiceType,
     field: string,
-    creationLimitBy: string,
+    creationLimitBy?: string | undefined,
     softDelete: boolean = false,
   ) {
     this.service = service;
@@ -133,3 +133,5 @@ class BaseController {
       .catch((e: Error) => this.APIResponseMessages.errorOccurred(res, e));
   };
 }
+
+export default BaseController;

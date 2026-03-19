@@ -6,6 +6,8 @@ by Altan Yilmaz
 
 https://www.udemy.com/course/build-deploy-a-real-world-api-with-typescript-docker
 
+https://www.bilibili.com/video/BV1oDwYz5ExJ/
+
 ## Table of content
 
 - Course Introduction & Expectations

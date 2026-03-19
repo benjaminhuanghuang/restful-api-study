@@ -28,6 +28,7 @@ const ShipmentSchema = new Mongoose.Schema(
     destination: {
       type: Mongoose.Schema.Types.ObjectId, // ObjectId reference
       ref: "customer",
+      required: true,
     },
     references: {
       // ["ref1", "123123123123123123123123123123123123132"]
@@ -39,11 +40,9 @@ const ShipmentSchema = new Mongoose.Schema(
       default: [], // optional
     },
     pallets: {
-      // 16
       type: Number,
     },
     cartons: {
-      // 12
       type: Number,
     },
     kilo: {
@@ -98,6 +97,21 @@ const ShipmentSchema = new Mongoose.Schema(
 
 ShipmentSchema.index(
   { user_id: 1, is_sub_shipment: 1, createdAt: -1 },
+  { partialFilterExpression: { is_sub_shipment: false } },
+);
+
+ShipmentSchema.index(
+  { user_id: 1, is_sub_shipment: 1, load_code: 1, createdAt: -1 },
+  { partialFilterExpression: { is_sub_shipment: false } },
+);
+
+ShipmentSchema.index(
+  { user_id: 1, is_sub_shipment: 1, cmr_status: 1, createdAt: -1 },
+  { partialFilterExpression: { is_sub_shipment: false } },
+);
+
+ShipmentSchema.index(
+  { user_id: 1, is_sub_shipment: 1, pod_status: 1, createdAt: -1 },
   { partialFilterExpression: { is_sub_shipment: false } },
 );
 

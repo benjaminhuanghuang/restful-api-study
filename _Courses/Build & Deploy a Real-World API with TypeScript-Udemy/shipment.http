@@ -1,0 +1,68 @@
+### Create a new shipment
+POST http://localhost:3001/api/v1/shipment
+Content-Type: application/json
+{
+    "carrier": "507f1f77bcf86cd799439012",
+    "destination": "507f1f77bcf86cd799439013",
+    "dock": "507f1f77bcf86cd799439014",
+    "references": ["REF-2026-001", "ORDER-12345"],
+    "pickup_time": "2026-01-20T00:00:00Z",
+    "loading_time": "09:30",
+    "delivery_date_time": "2026-01-21T14:00:00Z",
+    "load_code": "LOAD-ABC-123",
+    "pallets": 15,
+    "cartons": 050.5,
+    "kilo": 850.5,
+    "arrival_time": "14:30",
+    "departure_time": "16:45",
+    "status": 1,
+    "unloading_reference": "UNLOAD-XYZ-789",
+    "comments": "Handle with care - fragile items",
+    "cmr_status": false,
+    "pod_status": false,
+    "is_sub_shipment": false,
+    "sub_shipments": []
+}
+
+
+### Update an existing shipment
+PATCH http://localhost:3001/api/v1/shipment
+Content-Type: application/json
+{
+    "carrier": "507f1f77bcf86cd799439012",
+    "destination": "507f1f77bcf86cd799439013",
+    "dock": "507f1f77bcf86cd799439014",
+    "references": ["REF-2026-001", "ORDER-12345"],
+    "pickup_time": "2026-01-20T00:00:00Z",
+    "loading_time": "09:30",
+    "delivery_date_time": "2026-01-21T14:00:00Z",
+    "load_code": "LOAD-ABC-123",
+    "pallets": 15,
+    "cartons": 050.5,
+    "kilo": 850.5,
+    "arrival_time": "14:30",
+    "departure_time": "16:45",
+    "status": 1,
+    "unloading_reference": "UNLOAD-XYZ-789",
+    "comments": "Handle with care - fragile items",
+    "cmr_status": false,
+    "pod_status": false,
+    "is_sub_shipment": false,
+    "sub_shipments": []
+}
+
+
+### Add sub-shipment to an existing shipment
+PATCH http://localhost:3001/api/v1/shipment/507f1f77bcf86cd799439015/add-sub-shipment
+Content-Type: application/json
+
+{
+    "references": [
+        "REF-2026-001",
+        "ORDER-12345"
+    ],
+    "pallets": 15,
+    "cartons": 120,
+    "kilo": 850.5,
+    "comments": "Handle with care - fragile items"
+}

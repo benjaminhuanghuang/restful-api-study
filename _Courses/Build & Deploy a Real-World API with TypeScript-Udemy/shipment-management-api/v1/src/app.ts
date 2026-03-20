@@ -7,6 +7,7 @@ import {
   CarrierRoutes,
   CustomerRoutes,
   DockRoutes,
+  ShipmentRoutes,
 } from "./api-routes";
 import fileupload from "express-fileupload"; // 1.5k (gzipped: 0.5k)
 
@@ -49,6 +50,7 @@ apiRouter.use("/users", UserRoutes);
 apiRouter.use("/carrier", CarrierRoutes);
 apiRouter.use("/customer", CustomerRoutes);
 apiRouter.use("/dock", DockRoutes);
+apiRouter.use("/shipment", ShipmentRoutes);
 app.use("/api/v1", apiRouter);
 
 app.listen(3001, () => {

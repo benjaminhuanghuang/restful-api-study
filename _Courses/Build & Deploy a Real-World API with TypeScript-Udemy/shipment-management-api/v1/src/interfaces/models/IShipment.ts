@@ -1,4 +1,5 @@
 import { Document, Types } from "mongoose";
+import IDock from "./IDock";
 
 export default interface IShipment extends Document {
   user_id: Types.ObjectId;
@@ -14,7 +15,7 @@ export default interface IShipment extends Document {
   kilo?: number;
   arrival_time?: string;
   departure_time?: string;
-  dock: Types.ObjectId;
+  dock: Types.ObjectId | IDock;
   status: 0 | 1 | 2 | 3;
   unloading_reference?: string;
   comments?: string;

@@ -59,7 +59,9 @@ const ShipmentSchema = new Mongoose.Schema(
     dock: {
       type: Schema.Types.ObjectId, // ObjectId reference
       ref: "dock",
-      required: true,
+      required: function () {
+        return !this.is_sub_shipment; // dock is required if it's not a sub-shipment
+      },
     },
     status: {
       type: Number, // Only allows 0, 1, 2, 3

@@ -9,3 +9,20 @@ Content-Type: application/json
     "contact_person": "John Doe",
     "phone_number": "1234567890"
 }
+###
+POST http://localhost:3001/api/v1/users/login
+Content-Type: application/json
+
+{
+    "email": "test@example.com",
+    "password": "password123"
+}
+
+###
+POST http://localhost:3001/api/v1/users/change-password
+Content-Type: application/json
+Authorization: Bearer YOUR_TOKEN_HERE
+
+{
+    "password": "123456"
+}

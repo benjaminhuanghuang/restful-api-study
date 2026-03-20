@@ -8,6 +8,17 @@ const create = Joi.object({
   phone_number: Joi.string().max(12).required(),
 });
 
+const login = Joi.object({
+  email: Joi.string().email().max(128).required(),
+  password: Joi.string().max(24).required(),
+});
+
+const changePassword = Joi.object({
+  password: Joi.string().max(24).required(),
+});
+
 export default {
   create,
+  login,
+  changePassword,
 };

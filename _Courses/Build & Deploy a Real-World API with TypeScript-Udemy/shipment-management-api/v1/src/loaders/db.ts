@@ -7,19 +7,15 @@ db.on("connected", () => {
 });
 
 const connectDB = () => {
-  mongoose
-    .connect("mongodb://127.0.0.1:27017/shipment-management-api")
-    .catch((error) => {
-      console.error("Error connecting to the database:", error);
-    });
+  mongoose.connect(process.env.MONGO_URI!).catch((error) => {
+    console.error("Error connecting to the database:", error);
+  });
 };
 
 const connectDBTest = () => {
-  mongoose
-    .connect("mongodb://127.0.0.1:27017/shipment-management-api")
-    .catch((error) => {
-      console.error("Error connecting to the database:", error);
-    });
+  mongoose.connect(process.env.MONGO_URI!).catch((error) => {
+    console.error("Error connecting to the database:", error);
+  });
 };
 
 const connect =

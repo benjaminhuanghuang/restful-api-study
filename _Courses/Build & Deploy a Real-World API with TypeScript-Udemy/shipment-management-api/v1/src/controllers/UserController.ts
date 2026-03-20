@@ -51,8 +51,14 @@ class UserController extends BaseController {
         const result = {
           ...user.toObject(),
           tokens: {
-            accessToken: generateAccessToken(user),
-            refreshToken: generateRefreshToken(user),
+            accessToken: generateAccessToken({
+              email: user.email,
+              _id: user._id,
+            }),
+            refreshToken: generateRefreshToken({
+              email: user.email,
+              _id: user._id,
+            }),
           },
         };
         res.status(httpStatus.OK).send(result);
@@ -64,7 +70,26 @@ class UserController extends BaseController {
 
   forgotPassword = (req: Request, res: Response) => {};
 
-  changePassword = (req: Request, res: Response) => {};
+  changePassword = (req: Request, res: Response) => {
+    req.body.password = passwordToHash(req.body.password);
+
+    this.service.baseModel
+      .findByIdAndUpdate(req.user.id, req.body)
+      .then((updatedUser: IUser) => {
+        if (updatedUser) {
+          return res
+            .status(httpStatus.OK)
+            .send({ message: "Password changed successfully" });
+        } else {
+          return res
+            .status(httpStatus.NOT_FOUND)
+            .send({ message: "User not found" });
+        }
+      })
+      .catch((error: Error) => {
+        this.APIResponseMessages.errorOccurred(res, error);
+      });
+  };
 
   getProfile = (req: Request, res: Response) => {};
 

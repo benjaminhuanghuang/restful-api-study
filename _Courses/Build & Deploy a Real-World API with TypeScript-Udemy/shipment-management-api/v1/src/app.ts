@@ -3,6 +3,8 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors"; // 5k (gzipped: 2.1k)
 import helmet from "helmet"; // 12k (gzipped: 3.1k)
 import { UserRoutes, CarrierRoutes } from "./api-routes";
+import fileupload from "express-fileupload"; // 1.5k (gzipped: 0.5k)
+
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -10,6 +12,10 @@ loaders();
 
 const app = express();
 
+app.use(express.json());
+// parses incoming requests with URL-encoded bodies — the format used when HTML forms submit data
+app.use(express.urlencoded({ extended: true }));
+app.use(fileupload());
 app.use(helmet());
 app.use(
   cors({
@@ -17,9 +23,13 @@ app.use(
     methods: ["GET", "POST", "PATCH", "DELETE"],
   }),
 );
-app.use(express.json());
-// parses incoming requests with URL-encoded bodies — the format used when HTML forms submit data
-app.use(express.urlencoded({ extended: true }));
+app.use(helmet());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+  }),
+);
 
 //
 const apiRouter = express.Router();

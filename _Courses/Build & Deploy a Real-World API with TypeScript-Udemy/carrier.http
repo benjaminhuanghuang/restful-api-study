@@ -7,7 +7,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "name": "Express Logistics Inc.",
+     "name": "Express Logistics Inc.",
     "contact_person": "John Smith",
     "contact_phone": "555-0123",
     "contact_email": "john.smith@expresslogistics.com",

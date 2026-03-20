@@ -54,6 +54,8 @@ class BaseController {
     try {
       if (this.creationLimitBy)
         where[this.creationLimitBy] = req.body[this.creationLimitBy];
+      Object.assign(req.body, { user_id: (req as any).user.id });
+      Object.assign(where, { user_id: (req as any).user.id });
 
       this.service.findOne(where).then((response: object) => {
         if (!response) {

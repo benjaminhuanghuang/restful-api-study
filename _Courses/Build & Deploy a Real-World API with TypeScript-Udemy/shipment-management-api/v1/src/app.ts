@@ -2,7 +2,7 @@ import loaders from "./loaders";
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors"; // 5k (gzipped: 2.1k)
 import helmet from "helmet"; // 12k (gzipped: 3.1k)
-import { UserRoutes } from "./api-routes";
+import { UserRoutes, CarrierRoutes } from "./api-routes";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -24,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 //
 const apiRouter = express.Router();
 apiRouter.use("/users", UserRoutes);
+apiRouter.use("/carrier", CarrierRoutes);
 app.use("/api/v1", apiRouter);
 
 app.listen(3001, () => {

@@ -1,0 +1,20 @@
+
+@token = your_access_token_here
+
+###
+POST http://localhost:3001/api/v1/carrier
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "Express Logistics Inc.",
+    "contact_person": "John Smith",
+    "contact_phone": "555-0123",
+    "contact_email": "john.smith@expresslogistics.com",
+    "address_1": "123 Main Street",
+    "address_2": "Building A, Floor 5",
+    "address_3": "Suite 501",
+    "country": "United States",
+    "comment": "Preferred carrier for international shipments. Available 24/7.",
+    "status": true
+}  

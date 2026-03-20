@@ -102,4 +102,12 @@ const addSubShipment = Joi.object({
   comments: Joi.string().max(1024).optional().allow(""),
 });
 
-export default { create, update, addSubShipment };
+const updateSubShipment = Joi.object({
+  references: Joi.array().items(Joi.string().max(256)).optional().min(1),
+  pallets: Joi.number().integer().min(0).optional(),
+  cartons: Joi.number().integer().min(0).optional(),
+  kilo: Joi.number().min(0).optional(),
+  comments: Joi.string().max(1024).optional().allow(""),
+});
+
+export default { create, update, addSubShipment, updateSubShipment };

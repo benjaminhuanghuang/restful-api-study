@@ -66,3 +66,18 @@ Content-Type: application/json
     "kilo": 850.5,
     "comments": "Handle with care - fragile items"
 }
+
+### Update sub-shipment of an existing shipment
+PATCH http://localhost:3001/api/v1/shipment/507f1f77bcf86cd799439015/update-sub-shipment/507f1f77bcf86cd799439016
+Content-Type: application/json
+
+{
+    "references": [
+        "REF-2026-001",
+        "ORDER-12345"
+    ],
+    "pallets": 15,
+    "cartons": 120,
+    "kilo": 850.5,
+    "comments": "Handle with care - fragile items"
+}

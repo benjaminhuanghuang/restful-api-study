@@ -20,5 +20,12 @@ router
     validate(validationSchemas.addSubShipment),
     Shipment.addSubShipment,
   );
+router
+  .route("/:parentShipmentId/update-sub-shipment/:subShipmentId")
+  .patch(
+    authenticate,
+    validate(validationSchemas.updateSubShipment),
+    Shipment.updateSubShipment,
+  );
 
 export default router;

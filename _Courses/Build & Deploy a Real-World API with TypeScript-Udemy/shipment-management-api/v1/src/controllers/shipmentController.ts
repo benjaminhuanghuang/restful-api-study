@@ -158,7 +158,49 @@ class ShipmentController extends BaseController {
     }
   };
 
-  updateSubShipment = (req: Request, res: Response) => {};
+  updateSubShipment = (req: Request, res: Response) => {
+    try {
+      if (!req.params.parentShipmentId || !req.params.subShipmentId) {
+        return this.APIResponseMessages.badRequest(
+          res,
+          "Parent Shipment ID and Sub-Shipment ID are required",
+        );
+      }
+
+      this.service
+        .findOne({
+          user_id: (req as any).user?.id,
+          _id: req.params.subShipmentId,
+        })
+        .then((subShipment: IShipment) => {
+          if (!subShipment) {
+            return this.APIResponseMessages.custom(
+              res,
+              "Sub-Shipment not found",
+            );
+          }
+
+          this.service
+            .update((req as any).user?.id, req.params.subShipmentId, req.body)
+            .then((updatedSubShipment) => {
+              this.service
+                .findOne({
+                  user_id: (req as any).user?.id,
+                  _id: req.params.parentShipmentId,
+                })
+                .populate("carrier destination dock sub_shipments")
+                .then((populatedParentShipment: IShipment) => {
+                  return this.APIResponseMessages.updated(
+                    res,
+                    populatedParentShipment,
+                  );
+                });
+            });
+        });
+    } catch (error) {
+      return this.APIResponseMessages.errorOccurred(res, error as Error);
+    }
+  };
 
   arrivedShipments = (req: Request, res: Response) => {};
 

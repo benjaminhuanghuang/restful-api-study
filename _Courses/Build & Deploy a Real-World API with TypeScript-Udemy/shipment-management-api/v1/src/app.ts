@@ -2,7 +2,7 @@ import loaders from "./loaders";
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors"; // 5k (gzipped: 2.1k)
 import helmet from "helmet"; // 12k (gzipped: 3.1k)
-import { UserRoutes, CarrierRoutes } from "./api-routes";
+import { UserRoutes, CarrierRoutes, CustomerRoutes } from "./api-routes";
 import fileupload from "express-fileupload"; // 1.5k (gzipped: 0.5k)
 
 import dotenv from "dotenv";
@@ -35,6 +35,7 @@ app.use(
 const apiRouter = express.Router();
 apiRouter.use("/users", UserRoutes);
 apiRouter.use("/carrier", CarrierRoutes);
+apiRouter.use("/customer", CustomerRoutes);
 app.use("/api/v1", apiRouter);
 
 app.listen(3001, () => {

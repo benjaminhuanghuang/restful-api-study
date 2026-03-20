@@ -1,13 +1,13 @@
-import { ICarrier } from "../interfaces/models";
-import CarrierService from "../services/CarrierService";
+import { ICustomer } from "../interfaces/models";
+import CustomerService from "../services/CustomerService";
 import BaseController from "./baseController";
 import { Request, Response } from "express";
 import { Types } from "mongoose";
 import XLSX from "xlsx";
 
-class CarrierController extends BaseController {
+class CustomerController extends BaseController {
   constructor() {
-    super(CarrierService, "Carrier", "name", true);
+    super(CustomerService, "Customer", "name", true);
   }
 
   update = (req: Request, res: Response) => {
@@ -19,14 +19,14 @@ class CarrierController extends BaseController {
           name: name,
           _id,
         })
-        .then((existingCarrier: ICarrier) => {
-          if (!existingCarrier)
+        .then((existingCustomer: ICustomer) => {
+          if (!existingCustomer)
             return this.APIResponseMessages.noRecordsFound(res);
-          if (existingCarrier.name === name) {
+          if (existingCustomer.name === name) {
             this.service
-              .update(req.user.id, existingCarrier._id.toString(), req.body)
-              .then((updatedCarrier: ICarrier) => {
-                return this.APIResponseMessages.updated(res, updatedCarrier);
+              .update(req.user.id, existingCustomer._id.toString(), req.body)
+              .then((updatedCustomer: ICustomer) => {
+                return this.APIResponseMessages.updated(res, updatedCustomer);
               });
           } else {
             this.service
@@ -36,19 +36,19 @@ class CarrierController extends BaseController {
                   this.service
                     .update(
                       req.user.id,
-                      existingCarrier._id.toString(),
+                      existingCustomer._id.toString(),
                       req.body,
                     )
-                    .then((updatedCarrier: ICarrier) => {
+                    .then((updatedCustomer: ICustomer) => {
                       return this.APIResponseMessages.updated(
                         res,
-                        updatedCarrier,
+                        updatedCustomer,
                       );
                     });
                 } else {
                   return this.APIResponseMessages.alreadyExists(
                     res,
-                    `Carrier with same name(${name}) already exists`,
+                    `Customer with same name(${name}) already exists`,
                   );
                 }
               });
@@ -59,7 +59,7 @@ class CarrierController extends BaseController {
     }
   };
 
-  numberOfCarriers = async (req: Request, res: Response) => {
+  numberOfCustomers = async (req: Request, res: Response) => {
     try {
       const count = await this.service.countDocuments(req.user.id, {
         deleted: false,
@@ -70,7 +70,7 @@ class CarrierController extends BaseController {
     }
   };
 
-  uniqueCarrierFilterData = async (req: Request, res: Response) => {
+  uniqueCustomerFilterData = async (req: Request, res: Response) => {
     try {
       const list = await this.service.baseModel
         .aggregate([
@@ -260,7 +260,7 @@ class CarrierController extends BaseController {
     });
   };
 
-  uploadCarriers = async (req: Request, res: Response) => {
+  uploadCustomers = async (req: Request, res: Response) => {
     try {
       if (!req.files.excel_file) {
         return this.APIResponseMessages.badRequest(
@@ -283,7 +283,7 @@ class CarrierController extends BaseController {
         return this.APIResponseMessages.badRequest(res, "Excel file is empty");
       }
 
-      const sheet = wb.SheetNames[sheetName];
+      const sheet = wb.Sheets[sheetName];
 
       const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
 
@@ -294,7 +294,7 @@ class CarrierController extends BaseController {
         );
       }
 
-      const carriers = rows
+      const customers = rows
         .map((row, index) => {
           const name = String(row["name"] || "").trim();
 
@@ -333,16 +333,16 @@ class CarrierController extends BaseController {
               row.status === "Inactive" || row.status === "0" ? false : true,
           };
         })
-        .filter((carrier) => !carrier.error);
+        .filter((customer) => !customer.error);
 
       const inserted = [];
-      for (const carrier of carriers) {
-        if (!carrier.name) continue;
+      for (const customer of customers) {
+        if (!customer.name) continue;
 
         try {
           const doc = await this.service.baseModel.findOneAndUpdate(
-            { user_id: carrier.user_id, name: carrier.name, deleted: false },
-            carrier,
+            { user_id: customer.user_id, name: customer.name, deleted: false },
+            customer,
             { upsert: true, new: true, setDefaultsOnInsert: true },
           );
           inserted.push(doc);
@@ -362,17 +362,17 @@ class CarrierController extends BaseController {
     }
   };
 
-  getCarriers = async (req: Request, res: Response) => {
+  getCustomers = async (req: Request, res: Response) => {
     try {
-      const carriers: ICarrier[] = await this.service.baseModel.find(
+      const customers: ICustomer[] = await this.service.baseModel.find(
         { user_id: req.user.id, deleted: false },
         "_id name",
       );
-      return this.APIResponseMessages.listed(res, carriers);
+      return this.APIResponseMessages.listed(res, customers);
     } catch (error) {
       return this.APIResponseMessages.errorOccurred(res, error as Error);
     }
   };
 }
 
-export default new CarrierController();
+export default new CustomerController();

@@ -1,0 +1,11 @@
+###
+POST http://localhost:3001/api/v1/users
+Content-Type: application/json
+
+{
+    "email": "test@example.com",
+    "password": "password123",
+    "company_name": "Test Company",
+    "contact_person": "John Doe",
+    "phone_number": "1234567890"
+}

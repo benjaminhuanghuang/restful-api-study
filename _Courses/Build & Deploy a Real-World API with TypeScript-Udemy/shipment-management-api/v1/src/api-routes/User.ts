@@ -6,3 +6,5 @@ import User from "../controllers/UserController";
 const router = express.Router();
 
 router.route("/").post(validate(validationSchemas.create), User.create);
+
+export default router;

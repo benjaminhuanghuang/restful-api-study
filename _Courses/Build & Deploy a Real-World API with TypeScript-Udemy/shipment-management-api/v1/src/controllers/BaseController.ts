@@ -67,10 +67,12 @@ class BaseController {
               this.APIResponseMessages.errorOccurred(res, error);
             });
         } else {
-          this.APIResponseMessages.alreadyExists(
-            res,
-            req.body[this.creationLimitBy],
-          );
+          if (this.creationLimitBy) {
+            this.APIResponseMessages.alreadyExists(
+              res,
+              req.body[this.creationLimitBy],
+            );
+          }
         }
       });
     } catch (error) {

@@ -2,7 +2,12 @@ import BaseController from "./BaseController";
 import { UserService } from "../services";
 import { Request, Response } from "express";
 import { IUser } from "../interfaces/models";
-import { passwordToHash } from "../scripts/utils/helper";
+import httpStatus from "http-status";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  passwordToHash,
+} from "../scripts/utils/helper";
 
 class UserController extends BaseController {
   constructor() {
@@ -31,6 +36,41 @@ class UserController extends BaseController {
         this.APIResponseMessages.errorOccurred(res, error);
       });
   };
+
+  login = (req: Request, res: Response) => {
+    req.body.password = passwordToHash(req.body.password);
+    this.service
+      .findOne(req.body)
+      .then((user: IUser) => {
+        if (!user) {
+          return res
+            .status(httpStatus.NOT_FOUND)
+            .send({ message: "User not found" });
+        }
+
+        const result = {
+          ...user.toObject(),
+          tokens: {
+            accessToken: generateAccessToken(user),
+            refreshToken: generateRefreshToken(user),
+          },
+        };
+        res.status(httpStatus.OK).send(result);
+      })
+      .catch((error: Error) => {
+        this.APIResponseMessages.errorOccurred(res, error);
+      });
+  };
+
+  forgotPassword = (req: Request, res: Response) => {};
+
+  changePassword = (req: Request, res: Response) => {};
+
+  getProfile = (req: Request, res: Response) => {};
+
+  getBillingAddress = (req: Request, res: Response) => {};
+
+  uploadCompanyLogo = (req: Request, res: Response) => {};
 }
 
 export default new UserController();

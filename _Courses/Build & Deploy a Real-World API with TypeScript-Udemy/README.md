@@ -10,30 +10,30 @@ https://www.bilibili.com/video/BV1oDwYz5ExJ/
 
 ## Table of content
 
-- Course Introduction & Expectations
-- Project Setup & Structure
-- Core Architecture: Models
-- Services Layer
-- Interfaces & API Messaging
-- Base Controller Architecture
-- Helpers & Utilities
-- User Controller Basics
-- Validation Layer
-- User Routes
-- Database & Environment Setup
-- App Initialization & First Request
-- Developer Experience
-- User Controller (Deep Dive) - 1
-- Authentication & Security
-- User Controller (Deep Dive) - 2
-- Mailing System
-- User Controller (Deep Dive) - 3
-- Carrier Controller - Route etc.
-- Customer Controller - Route etc.
-- Dock Controller - Route etc.
-- Shipment Controller - Route etc.
-- API Security
-- Production Deployment: Docker, Nginx, SSL Certificates, and Domain Configuration
+1. Course Introduction & Expectations
+2. Project Setup & Structure
+3. Core Architecture: Models
+4. Services Layer
+5. Interfaces & API Messaging
+6. Base Controller Architecture
+7. Helpers & Utilities
+8. User Controller Basics
+9. Validation Layer
+10. User Routes
+11. Database & Environment Setup
+12. App Initialization & First Request
+13. Developer Experience
+14. User Controller (Deep Dive) - 1
+15. Authentication & Security
+16. User Controller (Deep Dive) - 2
+17. Mailing System
+18. User Controller (Deep Dive) - 3
+19. Carrier Controller - Route etc.
+20. Customer Controller - Route etc.
+21. Dock Controller - Route etc.
+22. Shipment Controller - Route etc.
+23. API Security
+24. Production Deployment: Docker, Nginx, SSL Certificates, and Domain Configuration
 
 ## Create secret
 

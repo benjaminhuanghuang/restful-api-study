@@ -202,13 +202,462 @@ class ShipmentController extends BaseController {
     }
   };
 
-  arrivedShipments = (req: Request, res: Response) => {};
+  arrivedShipments = (req: Request, res: Response) => {
+    this.service
+      .list({
+        status: 2,
+        user_id: (req as any).user?._id,
+        is_sub_shipment: false,
+      })
+      .populate("carrier destination dock")
+      .then((arrivedShipments: IShipment[]) => {
+        this.APIResponseMessages.listed(res, arrivedShipments);
+      })
+      .catch((e: Error) => this.APIResponseMessages.errorOccurred(res, e));
+  };
 
-  todaysShipments = (req: Request, res: Response) => {};
+  todaysShipments = (req: Request, res: Response) => {
+    const today = new Date();
+    const startOfDay = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+    );
+    const endOfDay = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 1,
+    );
 
-  shipmentStatistics = (req: Request, res: Response) => {};
+    this.service
+      .list({
+        user_id: (req as any).user?.id,
+        pickup_time: { $gte: startOfDay, $lt: endOfDay },
+        is_sub_shipment: false,
+      })
+      .populate("carrier destination dock")
+      .then((todaysShipments: IShipment[]) => {
+        this.APIResponseMessages.listed(res, todaysShipments);
+      })
+      .catch((e: Error) => this.APIResponseMessages.errorOccurred(res, e));
+  };
 
-  statusOfAllShipments = (req: Request, res: Response) => {};
+  numberOfLastWeekShipments = async (req: Request, res: Response) => {
+    try {
+      const now = new Date();
+
+      const utcDayIndex = (now.getUTCDay() + 6) % 7; // Monday=0, Tuesday=1, ..., Sunday=6
+
+      // 12.01.2026 00:00:00
+      const startOfThisWeek = new Date(
+        Date.UTC(
+          now.getUTCFullYear(),
+          now.getUTCMonth(),
+          now.getUTCDate() - utcDayIndex,
+          0,
+          0,
+          0,
+        ),
+      );
+
+      const startOfLastWeek = new Date(startOfThisWeek);
+      startOfLastWeek.setUTCDate(startOfThisWeek.getUTCDate() - 7);
+
+      const endOfLastWeek = startOfLastWeek;
+
+      const results = await this.service.baseModel.aggregate([
+        {
+          $match: {
+            user_id: (req as any).user?.id,
+            is_sub_shipment: false,
+            status: 3, // shipped
+            pickup_time: {
+              $gte: startOfLastWeek,
+              $lt: endOfLastWeek,
+            },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              $dateToString: { format: "%Y-%m-%d", date: "$pickup_time" },
+            },
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $sort: { _id: 1 },
+        },
+        {
+          $project: {
+            _id: 0,
+            date: "$_id",
+            count: 1,
+          },
+        },
+      ]);
+
+      const dayLabels = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ];
+
+      const countsByDate = results.reduce((acc: any, { date, count }: any) => {
+        acc[date] = count;
+        return acc;
+      });
+
+      const labels: string[] = [];
+      const data: number[] = [];
+
+      for (
+        let d = new Date(startOfLastWeek);
+        d < endOfLastWeek;
+        d.setDate(d.getDate() + 1)
+      ) {
+        const iso = d.toISOString().slice(0, 10);
+        labels.push(dayLabels[d.getDay() === 0 ? 6 : d.getDay() - 1]); // Sunday correction
+        data.push(countsByDate[iso] || 0);
+      }
+
+      return this.APIResponseMessages.custom(res, {
+        labels,
+        datasets: [
+          {
+            label: "Last week`s shipped shipments",
+            data,
+            backgroundColor: "rgba(75, 192, 192, 0.6)",
+          },
+        ],
+      });
+    } catch (error) {
+      return this.APIResponseMessages.errorOccurred(res, error as Error);
+    }
+  };
+
+  numberOfThisWeekShipments = async (req: Request, res: Response) => {
+    try {
+      const now = new Date();
+      const utcDayIndex = (now.getUTCDay() + 6) % 7; // Monday=0, Tuesday=1, ..., Sunday=6
+
+      const startOfThisWeek = new Date(
+        Date.UTC(
+          now.getUTCFullYear(),
+          now.getUTCMonth(),
+          now.getUTCDate() - utcDayIndex,
+          0,
+          0,
+          0,
+        ),
+      );
+      const endOfThisWeek = new Date(startOfThisWeek);
+      endOfThisWeek.setUTCDate(startOfThisWeek.getUTCDate() + 7);
+
+      const results = await this.service.baseModel.aggregate([
+        {
+          $match: {
+            user_id: (req as any).user?.id,
+            is_sub_shipment: false,
+            status: 3, // shipped
+            pickup_time: {
+              $gte: startOfThisWeek,
+              $lt: endOfThisWeek,
+            },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              $dateToString: { format: "%Y-%m-%d", date: "$pickup_time" },
+            },
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $sort: { _id: 1 },
+        },
+        {
+          $project: {
+            _id: 0,
+            date: "$_id",
+            count: 1,
+          },
+        },
+      ]);
+
+      const dayLabels = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ];
+
+      const countsByDate = results.reduce((acc: any, { date, count }: any) => {
+        acc[date] = count;
+        return acc;
+      });
+
+      const labels: string[] = [];
+      const data: number[] = [];
+
+      for (
+        let d = new Date(startOfThisWeek);
+        d < endOfThisWeek;
+        d.setDate(d.getDate() + 1)
+      ) {
+        const iso = d.toISOString().slice(0, 10);
+        labels.push(dayLabels[d.getDay() === 0 ? 6 : d.getDay() - 1]); // Sunday correction
+        data.push(countsByDate[iso] || 0);
+      }
+
+      return this.APIResponseMessages.custom(res, {
+        labels,
+        datasets: [
+          {
+            label: "This week`s shipped shipments",
+            data,
+            backgroundColor: "rgba(75, 192, 192, 0.6)",
+          },
+        ],
+      });
+    } catch (error) {
+      return this.APIResponseMessages.errorOccurred(res, error as Error);
+    }
+  };
+
+  numberOfShipmentsInThisYear = async (req: Request, res: Response) => {
+    try {
+      const now = new Date();
+      const utcDayIndex = (now.getUTCDay() + 6) % 7; // Monday=0, Tuesday=1, ..., Sunday=6
+
+      const startOfThisWeek = new Date(
+        Date.UTC(
+          now.getUTCFullYear(),
+          now.getUTCMonth(),
+          now.getUTCDate() - utcDayIndex,
+          0,
+          0,
+          0,
+        ),
+      );
+      const endOfThisWeek = new Date(startOfThisWeek);
+      endOfThisWeek.setUTCDate(startOfThisWeek.getUTCDate() + 7);
+
+      const results = await this.service.baseModel.aggregate([
+        {
+          $match: {
+            user_id: (req as any).user?.id,
+            is_sub_shipment: false,
+            status: 3, // shipped
+            pickup_time: {
+              $gte: startOfThisWeek,
+              $lt: endOfThisWeek,
+            },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              $dateToString: { format: "%Y-%m-%d", date: "$pickup_time" },
+            },
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $sort: { _id: 1 },
+        },
+        {
+          $project: {
+            _id: 0,
+            date: "$_id",
+            count: 1,
+          },
+        },
+      ]);
+
+      const dayLabels = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ];
+
+      const countsByDate = results.reduce((acc: any, { date, count }: any) => {
+        acc[date] = count;
+        return acc;
+      });
+
+      const labels: string[] = [];
+      const data: number[] = [];
+
+      for (
+        let d = new Date(startOfThisWeek);
+        d < endOfThisWeek;
+        d.setDate(d.getDate() + 1)
+      ) {
+        const iso = d.toISOString().slice(0, 10);
+        labels.push(dayLabels[d.getDay() === 0 ? 6 : d.getDay() - 1]); // Sunday correction
+        data.push(countsByDate[iso] || 0);
+      }
+
+      return this.APIResponseMessages.custom(res, {
+        labels,
+        datasets: [
+          {
+            label: "This week`s shipped shipments",
+            data,
+            backgroundColor: "rgba(75, 192, 192, 0.6)",
+          },
+        ],
+      });
+    } catch (error) {
+      return this.APIResponseMessages.errorOccurred(res, error as Error);
+    }
+  };
+
+  numberOfShipmentsInThisMonth = async (req: Request, res: Response) => {
+    try {
+      const now = new Date();
+      const utcDayIndex = (now.getUTCDay() + 6) % 7; // Monday=0, Tuesday=1, ..., Sunday=6
+
+      const startOfThisWeek = new Date(
+        Date.UTC(
+          now.getUTCFullYear(),
+          now.getUTCMonth(),
+          now.getUTCDate() - utcDayIndex,
+          0,
+          0,
+          0,
+        ),
+      );
+      const endOfThisWeek = new Date(startOfThisWeek);
+      endOfThisWeek.setUTCDate(startOfThisWeek.getUTCDate() + 7);
+
+      const results = await this.service.baseModel.aggregate([
+        {
+          $match: {
+            user_id: (req as any).user?.id,
+            is_sub_shipment: false,
+            status: 3, // shipped
+            pickup_time: {
+              $gte: startOfThisWeek,
+              $lt: endOfThisWeek,
+            },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              $dateToString: { format: "%Y-%m-%d", date: "$pickup_time" },
+            },
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $sort: { _id: 1 },
+        },
+        {
+          $project: {
+            _id: 0,
+            date: "$_id",
+            count: 1,
+          },
+        },
+      ]);
+
+      const dayLabels = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ];
+
+      const countsByDate = results.reduce((acc: any, { date, count }: any) => {
+        acc[date] = count;
+        return acc;
+      });
+
+      const labels: string[] = [];
+      const data: number[] = [];
+
+      for (
+        let d = new Date(startOfThisWeek);
+        d < endOfThisWeek;
+        d.setDate(d.getDate() + 1)
+      ) {
+        const iso = d.toISOString().slice(0, 10);
+        labels.push(dayLabels[d.getDay() === 0 ? 6 : d.getDay() - 1]); // Sunday correction
+        data.push(countsByDate[iso] || 0);
+      }
+
+      return this.APIResponseMessages.custom(res, {
+        labels,
+        datasets: [
+          {
+            label: "This week`s shipped shipments",
+            data,
+            backgroundColor: "rgba(75, 192, 192, 0.6)",
+          },
+        ],
+      });
+    } catch (error) {
+      return this.APIResponseMessages.errorOccurred(res, error as Error);
+    }
+  };
+
+  statusOfAllShipments = async (req: Request, res: Response) => {
+    const results = await this.service.baseModel.aggregate([
+      {
+        $match: {
+          user_id: new Types.ObjectId((req as any).user?.id),
+          is_sub_shipment: false,
+        },
+      },
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const statusMap: Record<number, string> = {
+      0: "Confirmed",
+      1: "Ready to ship",
+      2: "Arrived",
+      3: "Shipped",
+    };
+
+    const countsByLabel = Object.fromEntries(
+      Object.values(statusMap).map((label) => [label, 0]),
+    );
+
+    for (const { _id: StatusCode, count } of results) {
+      const label = statusMap[StatusCode];
+      if (label) countsByLabel[label] = count;
+    }
+
+    return this.APIResponseMessages.custom(res, {
+      Confirmed: countsByLabel["Confirmed"],
+      ReadyToShip: countsByLabel["Ready to ship"],
+      Arrived: countsByLabel["Arrived"],
+      Shipped: countsByLabel["Shipped"],
+    });
+  };
 
   numberOfShipments = (req: Request, res: Response) => {};
 

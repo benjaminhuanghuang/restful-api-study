@@ -28,4 +28,22 @@ router
     Shipment.updateSubShipment,
   );
 
+router.route("/arrived-shipments").get(authenticate, Shipment.arrivedShipments);
+router.route("/todays-shipments").get(authenticate, Shipment.todaysShipments);
+
+router
+  .route("/last-week-shipments")
+  .get(authenticate, Shipment.numberOfLastWeekShipments);
+router
+  .route("/this-week-shipments")
+  .get(authenticate, Shipment.numberOfThisWeekShipments);
+router
+  .route("/shipments-in-this-year")
+  .get(authenticate, Shipment.numberOfShipmentsInThisYear);
+router
+  .route("/shipments-in-this-month")
+  .get(authenticate, Shipment.numberOfShipmentsInThisMonth);
+router
+  .route("/status-of-shipments")
+  .get(authenticate, Shipment.statusOfAllShipments);
 export default router;

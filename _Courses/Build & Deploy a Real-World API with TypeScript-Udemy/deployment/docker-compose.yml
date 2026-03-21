@@ -1,0 +1,27 @@
+version: "3.4"
+
+services:
+  untitled-backend-app:
+    container_name: untitled-backend-app
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "3001:3001"
+    networks:
+      - main-network
+
+  untitled-mongo-db:
+    container_name: untitled-mongo-db
+    image: mongo:7
+    restart: always
+    command: ["auth", "--bind_ip", "0.0.0.0"]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: untitleddb
+    volumes:
+      - untitled-data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+    networks:
+      - main-netw

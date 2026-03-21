@@ -10,6 +10,14 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: true, limit: "50kb" }));
+
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"], //
+  }),
+);
 ```
 
 ## Rate limit

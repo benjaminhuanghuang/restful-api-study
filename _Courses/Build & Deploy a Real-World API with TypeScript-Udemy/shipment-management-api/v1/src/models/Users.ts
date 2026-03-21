@@ -26,7 +26,7 @@ const UserSchema = new Schema(
       maxLength: 128,
       index: true,
     },
-    password: { type: String, required: true, maxLength: 128 },
+    password: { type: String, required: true, maxLength: 64, select: false },
     company_name: { type: String, maxLength: 128 },
     contact_person: { type: String, maxLength: 128 },
     phone_number: { type: String, maxLength: 12 },

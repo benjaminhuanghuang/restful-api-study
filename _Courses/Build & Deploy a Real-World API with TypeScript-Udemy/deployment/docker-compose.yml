@@ -24,4 +24,17 @@ services:
       - untitled-data:/data/db
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
     networks:
-      - main-netw
+      - main-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  untitled-data:
+    name: untitled-data
+
+networks:
+  main-network:
+    external: false

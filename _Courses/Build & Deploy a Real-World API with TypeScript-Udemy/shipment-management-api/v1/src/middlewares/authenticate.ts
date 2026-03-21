@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import httpStatus from "http-status"; // 21.6k (gzipped: 7.6k)
-import JWT from "jsonwebtoken"; // 55.4k (gzipped: 16.4k)
+import httpStatus from "http-status";
+import JWT from "jsonwebtoken";
 
 const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers["authorization"];

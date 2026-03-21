@@ -1,6 +1,6 @@
 import e, { Request, Response, NextFunction } from "express";
-import { Schema } from "joi"; // 172.5k (gzipped: 54.3k)
-import httpStatuses from "http-status"; // 21.6k (gzipped: 7.6k)
+import { Schema } from "joi";
+import httpStatuses from "http-status";
 
 const validate =
   (schema: Schema) => (req: Request, res: Response, next: NextFunction) => {

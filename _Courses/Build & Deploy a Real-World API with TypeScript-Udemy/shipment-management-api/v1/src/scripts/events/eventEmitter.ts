@@ -1,5 +1,5 @@
 import eventEmitter from "./eventEmitter";
-import nodemailer from "nodemailer"; // 215.7k (gzipped: 58.4k)
+import nodemailer from "nodemailer";
 
 export default (): void => {
   eventEmitter.on("send_email", (emailData: object) => {

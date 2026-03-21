@@ -620,48 +620,197 @@ class ShipmentController extends BaseController {
   };
 
   statusOfAllShipments = async (req: Request, res: Response) => {
-    const results = await this.service.baseModel.aggregate([
-      {
-        $match: {
-          user_id: new Types.ObjectId((req as any).user?.id),
-          is_sub_shipment: false,
+    try {
+      const results = await this.service.baseModel.aggregate([
+        {
+          $match: {
+            user_id: new Types.ObjectId((req as any).user?.id),
+            is_sub_shipment: false,
+          },
         },
-      },
-      {
-        $group: {
-          _id: "$status",
-          count: { $sum: 1 },
+        {
+          $group: {
+            _id: "$status",
+            count: { $sum: 1 },
+          },
         },
-      },
-    ]);
+      ]);
 
-    const statusMap: Record<number, string> = {
-      0: "Confirmed",
-      1: "Ready to ship",
-      2: "Arrived",
-      3: "Shipped",
-    };
+      const statusMap: Record<number, string> = {
+        0: "Confirmed",
+        1: "Ready to ship",
+        2: "Arrived",
+        3: "Shipped",
+      };
 
-    const countsByLabel = Object.fromEntries(
-      Object.values(statusMap).map((label) => [label, 0]),
-    );
+      const countsByLabel = Object.fromEntries(
+        Object.values(statusMap).map((label) => [label, 0]),
+      );
 
-    for (const { _id: StatusCode, count } of results) {
-      const label = statusMap[StatusCode];
-      if (label) countsByLabel[label] = count;
+      for (const { _id: StatusCode, count } of results) {
+        const label = statusMap[StatusCode];
+        if (label) countsByLabel[label] = count;
+      }
+
+      return this.APIResponseMessages.custom(res, {
+        Confirmed: countsByLabel["Confirmed"],
+        ReadyToShip: countsByLabel["Ready to ship"],
+        Arrived: countsByLabel["Arrived"],
+        Shipped: countsByLabel["Shipped"],
+      });
+    } catch (error) {
+      return this.APIResponseMessages.errorOccurred(res, error as Error);
     }
-
-    return this.APIResponseMessages.custom(res, {
-      Confirmed: countsByLabel["Confirmed"],
-      ReadyToShip: countsByLabel["Ready to ship"],
-      Arrived: countsByLabel["Arrived"],
-      Shipped: countsByLabel["Shipped"],
-    });
   };
 
-  numberOfShipments = (req: Request, res: Response) => {};
+  numberOfShipments = async (req: Request, res: Response) => {
+    try {
+      const count = await this.service.countDocuments((req as any).user?.id, {
+        is_sub_shipment: false,
+      });
+      this.APIResponseMessages.custom(res, { totalShipments: count });
+    } catch (error) {
+      this.APIResponseMessages.errorOccurred(res, error as Error);
+    }
+  };
 
-  uniqueFilteringData = (req: Request, res: Response) => {};
+  uniqueFilteringData = async (req: Request, res: Response) => {
+    try {
+      let list = await this.service.baseModel
+        .aggregate([
+          {
+            $match: {
+              user_id: new Types.ObjectId((req as any).user?.id),
+              is_sub_shipment: false,
+            },
+          },
+          {
+            $lookup: {
+              from: "carriers",
+              localField: "carrier",
+              foreignField: "_id",
+              as: "carrier",
+            },
+          },
+          {
+            $lookup: {
+              from: "customers",
+              localField: "destination",
+              foreignField: "_id",
+              as: "destination",
+            },
+          },
+          {
+            $lookup: {
+              from: "docks",
+              localField: "dock",
+              foreignField: "_id",
+              as: "dock",
+            },
+          },
+          {
+            $project: {
+              pickup_time: 1,
+              loading_time: 1,
+              delivery_date_time: 1,
+              load_code: 1,
+              references: 1,
+              pallets: 1,
+              cartons: 1,
+              kilo: 1,
+              arrival_time: 1,
+              departure_time: 1,
+              status: 1,
+              unloading_reference: 1,
+              comments: 1,
+              cmr_status: 1,
+              pod_status: 1,
+              carrier: { $arrayElemAt: ["$carrier.name", 0] },
+              destination: { $arrayElemAt: ["$destination.name", 0] },
+              dock: { $arrayElemAt: ["$dock.name", 0] },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              pickup_times: { $addToSet: "$pickup_time" },
+              loading_times: { $addToSet: "$loading_time" },
+              delivery_date_times: { $addToSet: "$delivery_date_time" },
+              load_codes: { $addToSet: "$load_code" },
+              references: { $addToSet: "$references" },
+              pallets: { $addToSet: "$pallets" },
+              cartons: { $addToSet: "$cartons" },
+              kilos: { $addToSet: "$kilo" },
+              arrival_times: { $addToSet: "$arrival_time" },
+              departure_times: { $addToSet: "$departure_time" },
+              statuses: { $addToSet: "$status" },
+              unLoading_references: { $addToSet: "$unloading_reference" },
+              comments: { $addToSet: "$comments" },
+              cmr_statuses: { $addToSet: "$cmr_status" },
+              pod_statuses: { $addToSet: "$pod_status" },
+              carriers: { $addToSet: "$carrier" },
+              destinations: { $addToSet: "$destination" },
+              docks: { $addToSet: "$dock" },
+            },
+          },
+        ])
+        .exec();
+
+      list = list[0] || {};
+
+      if (list && list.pickup_times) {
+        // dd/mm/yyyy
+        list.pickup_times = list.pickup_times
+          .filter(Boolean)
+          .map((date: Date) => {
+            const d = new Date(date);
+            const day = String(d.getDate()).padStart(2, "0"); // dd
+            const month = String(d.getMonth() + 1).padStart(2, "0"); // mm
+            const year = d.getFullYear(); // yyyy
+            return `${day}/${month}/${year}`;
+          });
+      }
+
+      if (list && list.delivery_date_times) {
+        // dd/mm/yyyy
+        list.delivery_date_times = list.delivery_date_times
+          .filter(Boolean)
+          .map((date: Date) => {
+            const d = new Date(date);
+            const day = String(d.getDate()).padStart(2, "0"); // dd
+            const month = String(d.getMonth() + 1).padStart(2, "0"); // mm
+            const year = d.getFullYear(); // yyyy
+            return `${day}/${month}/${year}`;
+          });
+      }
+
+      if (list && list.statuses) {
+        list.statuses = list.statuses.map((status: number) => {
+          if (status === 0) return "Confirmed";
+          if (status === 1) return "Ready to ship";
+          if (status === 2) return "Arrived";
+          if (status === 3) return "Shipped";
+          return "Unknown";
+        });
+      }
+
+      if (list && list.cmr_statuses) {
+        list.cmr_statuses = list.cmr_statuses.map((status: boolean) =>
+          status ? "Done" : "To Do",
+        );
+      }
+
+      if (list && list.pod_statuses) {
+        list.pod_statuses = list.pod_statuses.map((status: boolean) =>
+          status ? "Done" : "To Do",
+        );
+      }
+
+      return this.APIResponseMessages.listed(res, list); //list[0] or empty object
+    } catch (error) {
+      return this.APIResponseMessages.errorOccurred(res, error as Error);
+    }
+  };
 }
 
 export default new ShipmentController();

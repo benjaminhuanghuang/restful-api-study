@@ -1,5 +1,5 @@
-import CryptoJS from "crypto-js"; // 64.9k (gzipped: 24.2k)
-import JWT from "jsonwebtoken"; // 55.4k (gzipped: 16.4k)
+import CryptoJS from "crypto-js";
+import JWT from "jsonwebtoken";
 import { IUser } from "../../interfaces/models";
 
 type TokenExpiration = JWT.SignOptions["expiresIn"];

@@ -46,4 +46,10 @@ router
 router
   .route("/status-of-shipments")
   .get(authenticate, Shipment.statusOfAllShipments);
+router
+  .route("/number-of-shipments")
+  .get(authenticate, Shipment.numberOfShipments);
+router
+  .route("/unique-shipment-filter-data")
+  .get(authenticate, Shipment.uniqueFilteringData);
 export default router;

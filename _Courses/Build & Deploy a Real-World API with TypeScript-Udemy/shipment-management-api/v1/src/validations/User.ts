@@ -1,4 +1,4 @@
-import Joi from "joi"; // 172.5k (gzipped: 54.3k)
+import Joi from "joi";
 
 const create = Joi.object({
   email: Joi.string().email().max(128).required(),

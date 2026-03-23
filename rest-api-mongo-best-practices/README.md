@@ -7,7 +7,7 @@
 - Zod(verify config and input)
 - Vitest
 - Jwt
-- MongoDB, PostgreSQL in Docker
+- MongoDB
 - Config for dev and prod
 
 ## Setup
@@ -16,7 +16,7 @@
 npm init -y
 
 npm i express cors
-npm i -D typescript @types/node @types/express
+npm i -D typescript @types/node @types/express tsx
 ```
 
 Node.js v24 supports Typescript
@@ -27,6 +27,8 @@ Node.js v24 supports Typescript
 npm i dotenv
 ```
 
+### env validation
+
 ## Test
 
 ```sh
@@ -36,7 +38,11 @@ npm i -D vitest supertest @types/supertest mongodb-memory-server
 Modify tsconfig.json
 
 ```json
-"types": ["node", "vitest/globals"]
+"compilerOptions": {
+    "types": ["node", "vitest/globals"]
+},
+"include": ["src/**/*.ts"],
+"exclude": ["tests", "node_modules", "dist"]
 ```
 
 Add vitest.config.ts

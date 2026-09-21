@@ -1,6 +1,6 @@
-# Project structure
+# Project structure - Feature first
 
-Feature-first: group by resource (module), not by layer.
+group by resource (module), not by layer.
 
 ```text
 src/

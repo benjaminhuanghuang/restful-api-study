@@ -1,7 +1,7 @@
 # API Design in Node.js, v5
 
 by Scott Moss
-https://frontendmasters.com/workshops/api-design-nodejs-v5/
+https://master.dev/courses/api-design-nodejs-v5/
 
 https://github.com/Hendrixer/api-design-node-v5
 

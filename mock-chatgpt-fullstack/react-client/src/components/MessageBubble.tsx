@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { ChatMessage } from '../types'
 
 interface MessageBubbleProps {
@@ -5,7 +6,7 @@ interface MessageBubbleProps {
   onRetry: (id: string) => void
 }
 
-export function MessageBubble({ message, onRetry }: MessageBubbleProps) {
+export const MessageBubble = memo(function MessageBubble({ message, onRetry }: MessageBubbleProps) {
   const isUser = message.role === 'user'
 
   return (
@@ -39,4 +40,4 @@ export function MessageBubble({ message, onRetry }: MessageBubbleProps) {
       </div>
     </div>
   )
-}
+})

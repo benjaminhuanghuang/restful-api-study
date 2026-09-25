@@ -19,6 +19,7 @@ Client <- SSE: Token/Chunk - API Server <- Token/Chunk -  LLM
 ## Client
 
 - react19 + tailwind4
+- auto scrolling
 
 ## Technical design
 

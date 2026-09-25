@@ -1,31 +1,38 @@
-import { useState } from 'react'
-import type { FormEvent } from 'react'
+import { useState } from "react";
+import type { SubmitEvent } from "react";
 
 interface ChatInputProps {
-  isStreaming: boolean
-  onSend: (text: string) => void
-  onStop: () => void
+  isStreaming: boolean;
+  onSend: (text: string) => void;
+  onStop: () => void;
 }
 
 export function ChatInput({ isStreaming, onSend, onStop }: ChatInputProps) {
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState("");
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    if (isStreaming) return
-    onSend(value)
-    setValue('')
-  }
+  const submit = () => {
+    if (isStreaming) return;
+    onSend(value);
+    setValue("");
+  };
+
+  const handleSubmit = (e: SubmitEvent) => {
+    e.preventDefault();
+    submit();
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-end gap-2 border-t border-neutral-200 p-4">
+    <form
+      onSubmit={handleSubmit}
+      className="flex items-end gap-2 border-t border-neutral-200 p-4"
+    >
       <textarea
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault()
-            handleSubmit(e)
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            submit();
           }
         }}
         placeholder="Message the mock assistant..."
@@ -51,5 +58,5 @@ export function ChatInput({ isStreaming, onSend, onStop }: ChatInputProps) {
         </button>
       )}
     </form>
-  )
+  );
 }

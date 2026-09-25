@@ -1,15 +1,15 @@
-import { useEffect, useRef } from 'react'
-import { ChatInput } from './components/ChatInput'
-import { MessageBubble } from './components/MessageBubble'
-import { useChatStream } from './hooks/useChatStream'
+import { useEffect, useRef } from "react";
+import { ChatInput } from "./components/ChatInput";
+import { MessageBubble } from "./components/MessageBubble";
+import { useChatStream } from "./hooks/useChatStream";
 
 function App() {
-  const { messages, isStreaming, send, retry, stop } = useChatStream()
-  const bottomRef = useRef<HTMLDivElement>(null)
+  const { messages, isStreaming, send, retry, stop } = useChatStream();
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ block: 'end' })
-  }, [messages])
+    bottomRef.current?.scrollIntoView({ block: "end" });
+  }, [messages]);
 
   return (
     <div className="mx-auto flex h-svh w-full max-w-3xl flex-col">
@@ -31,7 +31,7 @@ function App() {
 
       <ChatInput isStreaming={isStreaming} onSend={send} onStop={stop} />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -94,7 +94,7 @@ export function useChatStream() {
         if (!res.ok || !res.body) {
           throw new Error(`Request failed with status ${res.status}`);
         }
-
+        // Read the raw byte stream and incrementally parse out complete SSE records.
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
         let buffer = "";

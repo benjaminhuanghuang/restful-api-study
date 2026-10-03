@@ -77,11 +77,15 @@ type QueryParams = {
 
 ## Number query params
 
-## Separating concerns with Router
+## Separating concerns with Router ✅
 
-## Separating concerns with controllers
+## Separating concerns with controllers ✅
 
 ## Adding and typing middleware
+
+```ts
+petRouter.get("/:id", validateNumericId, getPetById);
+```
 
 ## Your own middleware
 

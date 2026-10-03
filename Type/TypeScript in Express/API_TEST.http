@@ -1,0 +1,13 @@
+@baseUrl = http://localhost:8000
+
+### Get all pets
+GET {{baseUrl}}/
+
+### Get pet by id
+GET {{baseUrl}}/1
+
+### Get pet by id - not found
+GET {{baseUrl}}/999
+
+### 404 - unknown route
+GET {{baseUrl}}/unknown

@@ -12,3 +12,41 @@
 - Pydantic
 - Timescale
 - Docker
+
+## Setup FastAPI
+
+```sh
+which python3
+python3 -m venv .venv3
+
+source ./.venv3/bin/activate
+pip install fastapi
+```
+
+requirements.txt
+
+```txt
+fastapi==0.115.11
+uvicorn
+gunicorn
+sqlmodel
+pydantic
+sqlalchemy
+timescaledb
+requests
+python-decouple
+psycopg[binary] # psycopg v3
+# psycopg2-binary
+```
+
+## Docker
+
+```sh
+docker pull python:3.6.15
+docker run python:3.6.15 -it --rm
+
+# reuse the container
+docker start -ai <container_id_or_name>
+```
+
+## Dockerfile

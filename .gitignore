@@ -6,4 +6,6 @@ dist
 coverage
 drizzle
 .next
- 
+venv3
+venv
+.venv*

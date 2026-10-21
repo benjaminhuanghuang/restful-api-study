@@ -39,6 +39,12 @@ psycopg[binary] # psycopg v3
 # psycopg2-binary
 ```
 
+## Run
+
+```sh
+uvicorn src.main:app --reload --app-dir src
+```
+
 ## Docker
 
 ```sh
@@ -50,3 +56,22 @@ docker start -ai <container_id_or_name>
 ```
 
 ## Dockerfile
+
+Dockerfile
+
+analytics-api/boot/docker-run.sh
+
+```sh
+docker build -t analytics-api -f Dockerfile .
+docker run analytics-api
+```
+
+## Docker compose
+
+```sh
+docker compose up --watch
+docker compose down
+docker compose run app /bin/bash
+```
+
+## API

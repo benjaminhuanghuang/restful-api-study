@@ -12,20 +12,17 @@ requirements.txt
 
 ```txt
 fastapi==0.115.11
-uvicorn
-gunicorn
-sqlmodel
-pydantic
-sqlalchemy
-timescaledb
-requests
-python-decouple
-psycopg[binary] # psycopg v3
-# psycopg2-binary
+uvicorn[standard]
 ```
 
-Uvicorn 和 Gunicorn 都是 Python 生态中最主流的 Web 应用服务器. 区别在于所支持的协议标准不同：
-Gunicorn 专为传统的同步（WSGI）设计，而 Uvicorn 专为现代的异步（ASGI）设计。
+FastAPI 基于 Starlette，Starlette 实现了 ASGI (Asynchronous Server Gateway Interface)规范；uvicorn 是实现了 ASGI 协议的服务器，
+`[standard]`定义了uvicorn 的依赖
+uvloop — 更快的事件循环（替代标准 asyncio）
+httptools — 更快的 HTTP 解析
+websockets — WebSocket 支持
+watchfiles — --reload 文件变更监听
+python-dotenv — 读取 .env
+pyyaml — 日志配置文件解析
 
 ## Run
 

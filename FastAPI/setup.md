@@ -11,7 +11,7 @@ pip install fastapi
 requirements.txt
 
 ```txt
-fastapi==0.115.11
+fastapi[standard]
 uvicorn[standard]
 ```
 
